@@ -5,22 +5,25 @@
 \alias{DEFAULT_IOTC_WL_EQUATIONS}
 \title{DEFAULT_IOTC_WL_EQUATIONS}
 \format{
-A data frame
+A data table
 \describe{
-  \item{\code{Time (s)}}{double COLUMN_DESCRIPTION}
-  \item{\code{Acceleration - x (m/s²)}}{double COLUMN_DESCRIPTION}
-  \item{\code{Acceleration - y (m/s²)}}{double COLUMN_DESCRIPTION}
-  \item{\code{Acceleration - z (m/s²)}}{double COLUMN_DESCRIPTION}
-  \item{\code{Acceleration - resultant (m/s²)}}{double COLUMN_DESCRIPTION}
+  \item{\code{SPECIES}}{character The IOTC species code}
+  \item{\code{FROM}}{character An IOTC weight measure code (one among: RND, GGT)}
+  \item{\code{TO}}{character The IOTC length measure code for the species' standard length (one among: FL, EFL)}
+  \item{\code{C}}{double the multiplicative constant for the conversion equation}
+  \item{\code{A}}{double the 'A' costant for the conversion equation}
+  \item{\code{B}}{double the 'B' costant for the conversion equation}
+  \item{\code{EQ_ID}}{character the identifier for the conversion equation to use (one among: IDENTITY, SQUARED, PROP, INVPROP, INVPROP_ALT, POW, INVPOW)}
+  \item{\code{NOTES}}{character Additional notes}
 }
 }
 \source{
-\url{http://somewhere.important.com/}
+\url{https://iotc.org/WPTT/24/Data/13-Equations/}
 }
 \usage{
 DEFAULT_IOTC_WL_EQUATIONS
 }
 \description{
-DEFAULT_IOTC_WL_EQUATIONS
+The weight-length conversion equations for some common IOTC species
 }
 \keyword{datasets}

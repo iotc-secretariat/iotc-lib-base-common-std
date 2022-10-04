@@ -6,21 +6,22 @@
 \title{DEFAULT_IOTC_WL_ND_KEYS}
 \format{
 A data frame
-\describe{
-  \item{\code{Time (s)}}{double COLUMN_DESCRIPTION}
-  \item{\code{Acceleration - x (m/s²)}}{double COLUMN_DESCRIPTION}
-  \item{\code{Acceleration - y (m/s²)}}{double COLUMN_DESCRIPTION}
-  \item{\code{Acceleration - z (m/s²)}}{double COLUMN_DESCRIPTION}
-  \item{\code{Acceleration - resultant (m/s²)}}{double COLUMN_DESCRIPTION}
+ \describe{
+  \item{\code{SPECIES}}{character The IOTC species code}
+  \item{\code{SOURCE_MEASURE_TYPE_CODE}}{character The IOTC weight measure code for the species' standard weight (one among: RND, GGT)}
+  \item{\code{SOURCE_CLASS_LOW}}{integer the lower bound of the source weight class (in kg)}
+  \item{\code{TARGET_MEASURE_TYPE_CODE}}{character The IOTC length measure code for the species' standard weight (one among: FL)}
+  \item{\code{TARGET_CLASS_LOW}}{integer the lower bound of the target length class (in cm)}
+  \item{\code{PROPORTION}}{double The proportion of fish allocated to the target weight class (converted from a source length class)}
 }
 }
 \source{
-\url{http://somewhere.important.com/}
+\url{https://iotc.org/WPTT/24/Data/13-Equations/}
 }
 \usage{
 DEFAULT_IOTC_WL_ND_KEYS
 }
 \description{
-DEFAULT_IOTC_WL_ND_KEYS
+Keys to implement a non-deterministic weight-length conversion equations for BET and YFT
 }
 \keyword{datasets}
