@@ -62,7 +62,15 @@ filter_data = function(raw_data, max_bin_size) {
 }
 
 apply_length_length_deterministic_equations = function(raw_data, ll_equations) {
+  l_info("# [ L-L ] #############################")
   l_info("Applying L-L deterministic equations...")
+
+  if(!is_available(ll_equations) | is.null(nrow(ll_equations))) {
+    l_warn("No L-L equations provided: returning original data...")
+    l_info("! [ L-L ] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+    return(raw_data)
+  }
 
   FC_BEFORE = sum(raw_data$FISH_COUNT, na.rm = TRUE);
 
@@ -102,11 +110,21 @@ apply_length_length_deterministic_equations = function(raw_data, ll_equations) {
   l_info("Finished applying L-L deterministic conversions!")
   l_info(paste0("Fish count before: ", FC_BEFORE, " - after: ", FC_AFTER, " - Diff: ", ( FC_AFTER - FC_BEFORE )))
 
+  l_info("= [ L-L ] =============================")
+
   return(raw_data)
 }
 
 apply_weight_length_deterministic_equations = function(raw_data, wl_equations) {
+  l_info("# [ W-L ] #############################")
   l_info("Applying W-L deterministic equations...")
+
+  if(!is_available(wl_equations) | is.null(nrow(wl_equations))) {
+    l_warn("No W-L equations provided: returning original data...")
+    l_info("! [ W-L ] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+    return(raw_data)
+  }
 
   FC_BEFORE = sum(raw_data$FISH_COUNT, na.rm = TRUE);
 
@@ -146,11 +164,22 @@ apply_weight_length_deterministic_equations = function(raw_data, wl_equations) {
   l_info("Finished applying W-L deterministic conversions!")
   l_info(paste0("Fish count before: ", FC_BEFORE, " - after: ", FC_AFTER, " - Diff: ", ( FC_AFTER - FC_BEFORE )))
 
+  l_info("= [ W-L ] =============================")
+
   return(raw_data)
 }
 
 apply_weight_length_nondeterministic_keys = function(raw_data, wl_keys) {
+  l_info("# [ W-L ND ] #########################")
   l_info("Applying W-L non-deterministic keys...")
+
+  if(!is_available(wl_keys) | is.null(nrow(wl_keys))) {
+    l_warn("No W-L keys provided: returning original data...")
+
+    l_info("! [ W-L ND ] !!!!!!!!!!!!!!!!!!!!!!!!!")
+
+    return(raw_data)
+  }
 
   FC_BEFORE = sum(raw_data$FISH_COUNT, na.rm = TRUE);
 
@@ -171,6 +200,8 @@ apply_weight_length_nondeterministic_keys = function(raw_data, wl_keys) {
   l_info("Finished applying W-L non deterministic conversions!")
   l_info(paste0("Fish count before: ", FC_BEFORE, " - after: ", FC_AFTER, " - Diff: ", ( FC_AFTER - FC_BEFORE )))
 
+  l_info("= [ W-L ND ] =========================")
+
   return(
     group_by_class_low(
       merged
@@ -179,6 +210,19 @@ apply_weight_length_nondeterministic_keys = function(raw_data, wl_keys) {
 }
 
 assign_round_weight_from_standard_length = function(raw_data, lw_equations) {
+  l_info("# [ L-W ] ###################################")
+  l_info("Converting standard length to round weight...")
+
+  if(!is_available(lw_equations) | is.null(nrow(lw_equations))) {
+    l_warn("No -LW equations provided: returning original data...")
+
+    l_info("! [ L-W ] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+    raw_data$WEIGHT = numeric()
+
+    return(raw_data)
+  }
+
   raw_data = assign_length_gear_type(raw_data)
   raw_data$WEIGHT = numeric()
 
@@ -226,6 +270,8 @@ assign_round_weight_from_standard_length = function(raw_data, lw_equations) {
 
   l_info("Standard length - round weight conversion completed!")
   l_info(paste0("Fish count before: ", FC_BEFORE, " - after: ", FC_AFTER, " - Diff: ", ( FC_AFTER - FC_BEFORE )))
+
+  l_info("= [ L-W ] ===================================")
 
   return(raw_data[!is.na(WEIGHT)])
 }
