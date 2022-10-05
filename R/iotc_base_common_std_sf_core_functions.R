@@ -56,7 +56,8 @@ filter_data = function(raw_data, max_bin_size) {
 
   FC_AFTER = sum(filtered$FISH_COUNT, na.rm = TRUE)
 
-  l_info(paste0("Finished filtering original data. Initial samples: ", FC_BEFORE, " - Filtered samples: ", FC_AFTER, " - Diff: ", ( FC_AFTER - FC_BEFORE )))
+  l_info("Finished filtering original data.")
+  l_info(paste0("Initial samples: ", FC_BEFORE, " - Filtered samples: ", FC_AFTER, " - Diff: ", ( FC_AFTER - FC_BEFORE )))
 
   return(filtered)
 }
