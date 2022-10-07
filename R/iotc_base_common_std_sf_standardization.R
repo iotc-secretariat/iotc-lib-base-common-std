@@ -44,7 +44,7 @@ standardize_size_frequencies = function(raw_data, max_bin_size = 5,
                                         wl_equations = DEFAULT_IOTC_WL_EQUATIONS,
                                         wl_keys      = DEFAULT_IOTC_WL_ND_KEYS) {
 
-  data =
+  processed_data =
     add_size_bin(
       preprocess_data(raw_data,
                       max_bin_size = max_bin_size,
@@ -57,27 +57,27 @@ standardize_size_frequencies = function(raw_data, max_bin_size = 5,
       bin_size = bin_size
     )
 
-  data =
-    data[, .(FISH_COUNT = sum(FISH_COUNT, na.rm = TRUE), WEIGHT = sum(WEIGHT, na.rm = TRUE)),
-             keyby = .(FLEET_CODE, YEAR, MONTH_START, MONTH_END, FISHING_GROUND_CODE, GEAR_CODE,
-                       FISHERY_TYPE_CODE, FISHERY_GROUP_CODE, FISHERY_CODE, SCHOOL_TYPE_CODE, SPECIES_CODE,
-                       SEX_CODE, RAISE_CODE, MEASURE_TYPE_CODE, SIZE_BIN)]
+  processed_data =
+    processed_data[, .(FISH_COUNT = sum(FISH_COUNT, na.rm = TRUE), WEIGHT = sum(WEIGHT, na.rm = TRUE)),
+                       keyby = .(FLEET_CODE, YEAR, MONTH_START, MONTH_END, FISHING_GROUND_CODE, GEAR_CODE,
+                                 FISHERY_TYPE_CODE, FISHERY_GROUP_CODE, FISHERY_CODE, SCHOOL_TYPE_CODE, SPECIES_CODE,
+                                 SEX_CODE, RAISE_CODE, MEASURE_TYPE_CODE, SIZE_BIN)]
 
-  data[, CLASS_LOW  := first_class_low + ( as.numeric(str_sub(SIZE_BIN, -3)) - 1 ) * bin_size]
-  data[, CLASS_HIGH := CLASS_LOW + bin_size]
+  processed_data[, CLASS_LOW  := first_class_low + ( as.numeric(str_sub(SIZE_BIN, -3)) - 1 ) * bin_size]
+  processed_data[, CLASS_HIGH := CLASS_LOW + bin_size]
 
-  data[SIZE_BIN == "C001", `:=`(CLASS_LOW = 0, CLASS_HIGH = first_class_low)]
-  data[SIZE_BIN == last_size_bin, CLASS_HIGH := NA]
+  processed_data[SIZE_BIN == "C001", `:=`(CLASS_LOW = 0, CLASS_HIGH = first_class_low)]
+  processed_data[SIZE_BIN == last_size_bin, CLASS_HIGH := NA]
 
-  return(data[, .(YEAR, MONTH_START, MONTH_END,
-                  FISHING_GROUND_CODE, GEAR_CODE,
-                  FISHERY_TYPE_CODE, FISHERY_GROUP_CODE, FISHERY_CODE,
-                  SCHOOL_TYPE_CODE,
-                  SPECIES_CODE, SEX_CODE,
-                  RAISE_CODE, MEASURE_TYPE_CODE,
-                  SIZE_BIN, CLASS_LOW, CLASS_HIGH,
-                  WEIGHT,
-                  FISH_COUNT)])
+  return(processed_data[, .(YEAR, MONTH_START, MONTH_END,
+                            FISHING_GROUND_CODE, GEAR_CODE,
+                            FISHERY_TYPE_CODE, FISHERY_GROUP_CODE, FISHERY_CODE,
+                            SCHOOL_TYPE_CODE,
+                            SPECIES_CODE, SEX_CODE,
+                            RAISE_CODE, MEASURE_TYPE_CODE,
+                            SIZE_BIN, CLASS_LOW, CLASS_HIGH,
+                            WEIGHT,
+                            FISH_COUNT)])
 }
 
 

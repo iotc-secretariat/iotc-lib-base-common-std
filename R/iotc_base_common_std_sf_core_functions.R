@@ -62,6 +62,22 @@ filter_data = function(raw_data, max_bin_size) {
   return(filtered)
 }
 
+convert_length_synonyms = function(raw_data, species_code, species_specific_equations, standard_length, alternative_lengths) {
+  for(l in alternative_lengths) {
+    if(nrow(species_specific_equations[FROM == l]) == 0) { # No equation identified: perform 1:1 conversion to standard length
+      to_update = raw_data[SPECIES_CODE == species_code & MEASURE_TYPE_CODE == l]
+
+      to_update_num = sum(to_update$FISH_COUNT, na.rm = TRUE)
+
+      if(to_update_num > 0) {
+        l_info(paste0(" ! 'identity' conversion of ", nrow(to_update), " records from ", l, " to ", standard_length, " for a total of ", sum(to_update$FISH_COUNT, na.rm = TRUE), " fish..."))
+
+        raw_data[SPECIES_CODE == species_code & MEASURE_TYPE_CODE == l, MEASURE_TYPE_CODE := standard_length]
+      }
+    }
+  }
+}
+
 apply_length_length_deterministic_equations = function(raw_data, ll_equations) {
   l_info("= [ L-L ] ===================================")
 
@@ -82,6 +98,13 @@ apply_length_length_deterministic_equations = function(raw_data, ll_equations) {
 
     s_ll_equations = ll_equations[SPECIES == s]
 
+    convert_length_synonyms(raw_data, s, s_ll_equations, standard_length = "FL",  alternative_lengths = c("FLB", "FLC", "FLCT", "FLUT"))
+    convert_length_synonyms(raw_data, s, s_ll_equations, standard_length = "EFL", alternative_lengths = c("EFUT"))
+    convert_length_synonyms(raw_data, s, s_ll_equations, standard_length = "CKL", alternative_lengths = c("CKUT"))
+    convert_length_synonyms(raw_data, s, s_ll_equations, standard_length = "PAL", alternative_lengths = c("PALT"))
+    convert_length_synonyms(raw_data, s, s_ll_equations, standard_length = "PCL", alternative_lengths = c("PCLT"))
+    convert_length_synonyms(raw_data, s, s_ll_equations, standard_length = "LDF", alternative_lengths = c("LDFT"))
+
     if(nrow(s_ll_equations) == 0 | is.null(nrow(s_ll_equations))) {
       l_warn(paste0("No L-L equations available for ", s))
     } else {
@@ -95,12 +118,12 @@ apply_length_length_deterministic_equations = function(raw_data, ll_equations) {
         A  = eq$A[[1]]
         B  = eq$B[[1]]
 
-        l_info(paste0("Converting ", MF, " to ", MT))
+        l_info(paste0(" * Converting ", MF, " to ", MT))
 
         raw_data[SPECIES_CODE == s & MEASURE_TYPE_CODE == MF,
                  `:=`(MEASURE_TYPE_CODE = MT,
-                      CLASS_LOW  = round(FN(C, A, B, CLASS_LOW), 0),
-                      CLASS_HIGH = round(FN(C, A, B, CLASS_HIGH), 0))]
+                        CLASS_LOW  = round(FN(C, A, B, CLASS_LOW), 0),
+                        CLASS_HIGH = round(FN(C, A, B, CLASS_HIGH), 0))]
 
         raw_data[SPECIES_CODE == s & MEASURE_TYPE_CODE == MT & CLASS_LOW == CLASS_HIGH,
                  CLASS_HIGH := CLASS_LOW + 1]

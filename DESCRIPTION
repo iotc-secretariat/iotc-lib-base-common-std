@@ -12,4 +12,5 @@ LazyData: true
 RoxygenNote: 7.1.1
 Depends: 
     data.table,
-    iotc.base.common.data (>= 0.3.0)
+    iotc.base.common.data (>= 0.3.0),
+    R (>= 2.10)
