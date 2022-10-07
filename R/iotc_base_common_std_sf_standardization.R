@@ -1,3 +1,11 @@
+#' String constant for purse-seine, pole-and-line and gillnet gears
+#' @export
+GEAR_TYPE_PSPLGI = "PSPLGI"
+
+#' String constant for longline and all other gears
+#' @export
+GEAR_TYPE_LLOT   = "LLOT"
+
 #' Standardizes 'raw' SF data (in _long_ format)
 #'
 #' Input records undergo a number of processing steps that yield a SF dataset with all
@@ -145,3 +153,96 @@ standardize.SF = standardize_size_frequencies
 #' Alias for \code{\link{standardize_and_pivot_size_frequencies}}
 #' @export
 standardize_pivot.SF = standardize_and_pivot_size_frequencies
+
+#' Converts between length measurements for a given species (assuming an equation is known)
+#' @export
+convert_lengths = function(species_code, length_from_code, length_to_code = "FL", measurement, ll_equations = DEFAULT_IOTC_LL_EQUATIONS) {
+  equation = ll_equations[SPECIES == species_code &
+                            FROM == length_from_code &
+                            TO == length_to_code]
+
+  if(nrow(equation) == 0)
+    stop(paste0("Unable to find a L-L conversion equation for ", species_code, " (", length_from_code, " -> ", length_to_code, ")"))
+
+  if(nrow(equation) > 1)
+    stop(paste0("Multiple (", nrow(equation), ") L-L conversion equations for ", species_code, " (", length_from_code, " -> ", length_to_code, ")"))
+
+  equation = equation[1]
+
+  return(
+    get(equation$EQ_ID)(equation$C, equation$A, equation$B, measurement)
+  )
+}
+
+#' Converts between length and weight measurements for a given species (assuming an equation is known)
+#' @export
+length_to_weight = function(species_code, gear_type = GEAR_TYPE_PSPLGI, length_from_code = "FL", weight_to_code = "RND", measurement, lw_equations = DEFAULT_IOTC_LW_EQUATIONS) {
+  equation = lw_equations[SPECIES == species_code &
+                            FROM == length_from_code &
+                            TO == weight_to_code &
+                            GEAR_TYPE == gear_type]
+
+  if(nrow(equation) == 0)
+    stop(paste0("Unable to find a L-W conversion equation for ", species_code, " / ", gear_type, " (", length_from_code, " -> ", weight_to_code, ")"))
+
+  if(nrow(equation) > 1)
+    stop(paste0("Multiple (", nrow(equation), ") L-W conversion equations for ", species_code, " / ", gear_type, " (", length_from_code, " -> ", weight_to_code, ")"))
+
+  equation = equation[1]
+
+  return(
+    get(equation$EQ_ID)(equation$C, equation$A, equation$B, measurement)
+  )
+}
+
+#' Converts between weight and length measurements for a given species (assuming an equation is known)
+#' @export
+weight_to_length = function(species_code, gear_type = GEAR_TYPE_PSPLGI, weight_from_code = "RND", length_to_code = "FL", measurement, wl_equations = DEFAULT_IOTC_WL_EQUATIONS) {
+  equation = lw_equations[SPECIES == species_code &
+                            FROM == weight_from_code &
+                            TO == length_to_code] #gear type is not (yet?) considered when converting from W to L
+
+  if(nrow(equation) == 0)
+    stop(paste0("Unable to find a W-L conversion equation for ", species_code, " / ", gear_type, " (", weight_from_code, " -> ", length_to_code, ")"))
+
+  if(nrow(equation) > 1)
+    stop(paste0("Multiple (", nrow(equation), ") W-L conversion equations for ", species_code, " / ", gear_type, " (", weight_from_code, " -> ", length_to_code, ")"))
+
+  equation = equation[1]
+
+  return(
+    get(equation$EQ_ID)(equation$C, equation$A, equation$B, measurement)
+  )
+}
+
+#' Converts between weight and length measurements for a given species (using non-deterministic conversion keys, assuming these are known)
+#' @export
+weight_to_length_non_deterministic = function(species_code, weight_from_code = "RND", length_to_code = "FL", measurement, wl_keys = DEFAULT_IOTC_WL_ND_KEYS) {
+  keys = wl_keys[SPECIES_CODE == species_code &
+                 SOURCE_MEASURE_TYPE_CODE == weight_from_code &
+                 TARGET_MEASURE_TYPE_CODE == length_to_code &
+                 SOURCE_CLASS_LOW == round(measurement)]
+
+  if(nrow(keys) == 0)
+    stop(paste0("Unable to find non-deterministic W-L keys for ", species_code, " (", weight_from_code, " -> ", length_to_code, ")"))
+
+  return(
+    keys[, .(WEIGHT = SOURCE_CLASS_LOW, LENGTH = TARGET_CLASS_LOW, PROPORTION)]
+  )
+}
+
+#' Alias for \code{\link{convert_lengths}}
+#' @export
+convert.LL = convert_lengths
+
+#' Alias for \code{\link{length_to_weight}}
+#' @export
+convert.LW = length_to_weight
+
+#' Alias for \code{\link{weight_to_length}}
+#' @export
+convert.WL = weight_to_length
+
+#' Alias for \code{\link{weight_to_length_non_deterministic}}
+#' @export
+convert.WL.ND = weight_to_length_non_deterministic
