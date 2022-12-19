@@ -69,7 +69,12 @@ standardize_size_frequencies = function(raw_data, max_bin_size = 5,
   processed_data[SIZE_BIN == "C001", `:=`(CLASS_LOW = 0, CLASS_HIGH = first_class_low)]
   processed_data[SIZE_BIN == last_size_bin, CLASS_HIGH := NA]
 
-  return(processed_data[, .(YEAR, MONTH_START, MONTH_END,
+  processed_data[MONTH_START %in% 1:3,   QUARTER := "Q1"]
+  processed_data[MONTH_START %in% 4:6,   QUARTER := "Q2"]
+  processed_data[MONTH_START %in% 7:9,   QUARTER := "Q3"]
+  processed_data[MONTH_START %in% 10:12, QUARTER := "Q4"]
+
+  return(processed_data[, .(YEAR, QUARTER, MONTH_START, MONTH_END,
                             FISHING_GROUND_CODE, FLEET_CODE,
                             GEAR_CODE,
                             FISHERY_TYPE_CODE, FISHERY_GROUP_CODE, FISHERY_CODE,
