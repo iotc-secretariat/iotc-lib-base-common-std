@@ -70,7 +70,8 @@ standardize_size_frequencies = function(raw_data, max_bin_size = 5,
   processed_data[SIZE_BIN == last_size_bin, CLASS_HIGH := NA]
 
   return(processed_data[, .(YEAR, MONTH_START, MONTH_END,
-                            FISHING_GROUND_CODE, GEAR_CODE,
+                            FISHING_GROUND_CODE, FLEET_CODE,
+                            GEAR_CODE,
                             FISHERY_TYPE_CODE, FISHERY_GROUP_CODE, FISHERY_CODE,
                             SCHOOL_TYPE_CODE,
                             SPECIES_CODE, SEX_CODE,
@@ -158,8 +159,8 @@ standardize_pivot.SF = standardize_and_pivot_size_frequencies
 #' @export
 convert_lengths = function(species_code, length_from_code, length_to_code = "FL", measurement, ll_equations = DEFAULT_IOTC_LL_EQUATIONS) {
   equation = ll_equations[SPECIES == species_code &
-                            FROM == length_from_code &
-                            TO == length_to_code]
+                          FROM    == length_from_code &
+                          TO      == length_to_code]
 
   if(nrow(equation) == 0)
     stop(paste0("Unable to find a L-L conversion equation for ", species_code, " (", length_from_code, " -> ", length_to_code, ")"))
@@ -177,10 +178,10 @@ convert_lengths = function(species_code, length_from_code, length_to_code = "FL"
 #' Converts between length and weight measurements for a given species (assuming an equation is known)
 #' @export
 length_to_weight = function(species_code, gear_type = GEAR_TYPE_PSPLGI, length_from_code = "FL", weight_to_code = "RND", measurement, lw_equations = DEFAULT_IOTC_LW_EQUATIONS) {
-  equation = lw_equations[SPECIES == species_code &
-                            FROM == length_from_code &
-                            TO == weight_to_code &
-                            GEAR_TYPE == gear_type]
+  equation = lw_equations[SPECIES   == species_code &
+                          FROM      == length_from_code &
+                          TO        == weight_to_code &
+                          GEAR_TYPE == gear_type]
 
   if(nrow(equation) == 0)
     stop(paste0("Unable to find a L-W conversion equation for ", species_code, " / ", gear_type, " (", length_from_code, " -> ", weight_to_code, ")"))
@@ -199,8 +200,8 @@ length_to_weight = function(species_code, gear_type = GEAR_TYPE_PSPLGI, length_f
 #' @export
 weight_to_length = function(species_code, gear_type = GEAR_TYPE_PSPLGI, weight_from_code = "RND", length_to_code = "FL", measurement, wl_equations = DEFAULT_IOTC_WL_EQUATIONS) {
   equation = lw_equations[SPECIES == species_code &
-                            FROM == weight_from_code &
-                            TO == length_to_code] #gear type is not (yet?) considered when converting from W to L
+                          FROM    == weight_from_code &
+                          TO      == length_to_code] #gear type is not (yet?) considered when converting from W to L
 
   if(nrow(equation) == 0)
     stop(paste0("Unable to find a W-L conversion equation for ", species_code, " / ", gear_type, " (", weight_from_code, " -> ", length_to_code, ")"))
