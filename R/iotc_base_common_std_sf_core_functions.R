@@ -1,9 +1,3 @@
-update_equation = function(equations_table) {
-  equations_table[, EQ_ID := paste0("EQ_", EQ_ID)]
-
-  return(equations_table)
-}
-
 # Assigns one of the two categories of fisheries used to identify the L-W equation for some species.
 # Doesn't make much sense to have different eqs. by fishery, IMHO. Nevertheless, here we are: applies
 # to BET and YFT only.

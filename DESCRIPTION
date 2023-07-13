@@ -1,7 +1,7 @@
 Package: iotc.base.common.std
 Type: Package
 Title: IOTC base functions for standardization of common IOTC data sets
-Version: 0.3.0
+Version: 0.2.1
 Author: Fabio Fiorellato <fabio.fiorellato@fao.org>
 Maintainer: Fabio Fiorellato <fabio.fiorellato@fao.org>
 Description: Various functions and constants to support the standardization of IOTC data sets
@@ -9,8 +9,8 @@ Description: Various functions and constants to support the standardization of I
 License: Private
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Depends: 
     data.table,
-    iotc.base.common.data (>= 0.3.0),
+    iotc.base.common.data (>= 0.2.1),
     R (>= 2.10)
