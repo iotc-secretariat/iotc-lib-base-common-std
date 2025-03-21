@@ -13,4 +13,4 @@ RoxygenNote: 7.3.1
 Depends: 
     data.table,
     iotc.base.common.data (>= 0.2.1),
-    R (>= 2.10)
+    R (>= 3.5)
