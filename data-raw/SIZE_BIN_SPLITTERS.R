@@ -9,7 +9,7 @@ for(i in 1:50) {
   BIN_INCS  = append(BIN_INCS, seq(0, i - 1))
 }
 
-# These 'splitters' are Used to split size bins larger than 1 in multiple size bins with width = 1,
+# These 'splitters' are used to split size bins larger than 1 in multiple size bins with width = 1,
 # each of which is assigned a fraction (PROP) of the original fish count, depending on its width...
 SIZE_BIN_SPLITTERS =
   data.table(
