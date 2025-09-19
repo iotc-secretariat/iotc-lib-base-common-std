@@ -1,15 +1,15 @@
 Package: iotc.base.common.std
 Type: Package
-Title: IOTC base functions for standardization of common IOTC data sets
+Title: IOTC base functions for standardisation of common IOTC datasets
 Version: 0.2.1
-Author: Fabio Fiorellato <fabio.fiorellato@fao.org>
-Maintainer: Fabio Fiorellato <fabio.fiorellato@fao.org>
-Description: Various functions and constants to support the standardization of IOTC data sets
+Author: IOTC Secretariat <IOTC-Statistics@fao.org>
+Maintainer: IOTC Secretariat <IOTC-Statistics@fao.org>
+Description: Various functions and constants to support the standardization of IOTC datasets
     Raw size-frequencies    (IOTDB.meta / V_LEGACY_SF_raw + V_LEGACY_SF_off)
-License: Private
+License: MIT
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Depends: 
     data.table,
     iotc.base.common.data (>= 0.2.1),
